@@ -61,7 +61,6 @@ examples = (
     f'{number:.3g}',
     f'{percent:.0%}'
 )
-print(examples)
 # > print(examples)
 # ('4125.60', '4,125.60', '04125.60', ' 4125.60', '4.1e+03', '4125.6', '37%')"
 
