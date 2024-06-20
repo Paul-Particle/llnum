@@ -18,3 +18,4 @@ def test_midpoint_vector():
     assert success, msg
 
 test_midpoint_vector()
+
