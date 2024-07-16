@@ -1,4 +1,4 @@
-# utils utils.py
+# mypy utils.py
 
 # Code snippets for common tasks
 
@@ -16,7 +16,7 @@ from pathlib import Path
 OUTPUTPATH = Path('./output/')
 DATAPATH = Path('./data/')
 
-def timestamp(date=True,time=True):
+def get_timestamp(date=True,time=True):
     dt = datetime.datetime.now()
     if date and time:
         return dt.strftime('%Y-%m-%d_%H-%M-%S')
@@ -25,13 +25,19 @@ def timestamp(date=True,time=True):
     else:
         return dt.strftime('%H-%M-%S')
 
-def saveFig(fig, filename='untitled', path=OUTPUTPATH, add_time=True, html=True, png=True, scale=2):
+def save_fig(fig, filename='untitled', path=OUTPUTPATH, add_time=True, html=True, png=True, svg=False, json=False, scale=2, save_condition=True):
+    if not save_condition:
+        return
     if add_time:
-        filename = f'{timestamp()}_{filename}'
+        filename = f'{get_timestamp()}_{filename}'
     if html:
         fig.write_html(path / (filename + '.html'))
     if png:
         fig.write_image(path / (filename + '.png'), scale=scale)
+    if svg:
+        fig.write_image(path / (filename + '.svg'))
+    if json:
+        fig.write_json(path / (filename + '.json'), pretty=True)
 
 # --------------------------------------------------------
 
@@ -42,7 +48,9 @@ PLOTLY_CONFIG = {
     # 'scrollZoom': True
     }
 
-def colorscale(points, cmap='viridis'):
+def get_colorscale(points, cmap='viridis', normalize=False):
+    if normalize:
+        points = (points - min(points)) / (max(points) - min(points))
     # map n points to n colors
     return px.colors.sample_colorscale(cmap, points)
 
@@ -61,6 +69,7 @@ examples = (
     f'{number:.3g}',
     f'{percent:.0%}'
 )
+#print(examples)
 # > print(examples)
 # ('4125.60', '4,125.60', '04125.60', ' 4125.60', '4.1e+03', '4125.6', '37%')"
 
@@ -168,7 +177,7 @@ def example():
     )
     
     fig.show(config=PLOTLY_CONFIG)
-    saveFig(fig, figname, add_time=False)
+    save_fig(fig, figname, add_time=False)
 
 
 if __name__ == '__main__':
